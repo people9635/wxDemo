@@ -1,11 +1,11 @@
 package com.github.binarywang.demo.wx.mp.handler;
 
 import com.github.binarywang.demo.wx.mp.ReplyEnum;
+import com.github.binarywang.demo.wx.mp.builder.ArtcleBuilder;
+import com.github.binarywang.demo.wx.mp.builder.ImageBuilder;
 import com.github.binarywang.demo.wx.mp.builder.TextBuilder;
-import com.github.binarywang.demo.wx.mp.utils.JsonUtils;
-import com.github.binarywang.demo.wx.mp.utils.RobetUtil;
+import com.github.binarywang.demo.wx.mp.entity.PicArtEnum;
 import com.github.binarywang.demo.wx.mp.utils.TulingRobot;
-import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
@@ -34,8 +34,12 @@ public class MsgHandler extends AbstractHandler {
 
         //文本内容回复
         String respContent = "";
+        String picArtString = PicArtEnum.ContentFilter(wxMessage.getContent());
+        //返回图文信息
+        if (StringUtils.isNotEmpty(picArtString)){
+            return new ArtcleBuilder().build(respContent, wxMessage, weixinService);
+        }
         respContent = ReplyEnum.ContentFilter(wxMessage.getContent());
-
         if (StringUtils.isNotEmpty(respContent)){}
         else if (wxMessage.getMsgType().equals("text")){
             respContent = TulingRobot.instance().chat(wxMessage.getFromUser(), wxMessage.getContent());
