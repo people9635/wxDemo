@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8080
 logging:
   level:
     org.springframework.web: INFO
@@ -12,3 +12,4 @@ wx:
         secret: 796e10827358f9e9fb36e0a30908ac68
         token: people9635
         aesKey: Lhjud6Ox54Qv4qsk9ZzJZci5NKWed2LCgJFIGzdZdje
+apiKey: c8e4bb39062f4593aeb9796023f6f1f8

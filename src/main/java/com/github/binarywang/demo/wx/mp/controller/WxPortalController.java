@@ -71,12 +71,16 @@ public class WxPortalController {
         if (encType == null) {
             // 明文传输的消息
             WxMpXmlMessage inMessage = WxMpXmlMessage.fromXml(requestBody);
+            this.logger.info("inMessage:{},",inMessage);
+
             WxMpXmlOutMessage outMessage = this.route(inMessage, appid);
+            this.logger.info("outMessage:{},",outMessage);
             if (outMessage == null) {
                 return "";
             }
 
             out = outMessage.toXml();
+            this.logger.info("out:{},",out);
         } else if ("aes".equalsIgnoreCase(encType)) {
             // aes加密的消息
             WxMpXmlMessage inMessage = WxMpXmlMessage.fromEncryptedXml(requestBody, wxService.getWxMpConfigStorage(),

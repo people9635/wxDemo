@@ -1,7 +1,10 @@
 package com.github.binarywang.demo.wx.mp.handler;
 
+import com.github.binarywang.demo.wx.mp.ReplyEnum;
 import com.github.binarywang.demo.wx.mp.builder.TextBuilder;
 import com.github.binarywang.demo.wx.mp.utils.JsonUtils;
+import com.github.binarywang.demo.wx.mp.utils.RobetUtil;
+import com.github.binarywang.demo.wx.mp.utils.TulingRobot;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -29,23 +32,19 @@ public class MsgHandler extends AbstractHandler {
             //TODO 可以选择将消息保存到本地
         }
 
-        //当用户输入关键词如“你好”，“客服”等，并且有客服在线时，把消息转发给在线客服
-        try {
-            if (StringUtils.startsWithAny(wxMessage.getContent(), "你好", "客服")
-                && weixinService.getKefuService().kfOnlineList()
-                .getKfOnlineList().size() > 0) {
-                return WxMpXmlOutMessage.TRANSFER_CUSTOMER_SERVICE()
-                    .fromUser(wxMessage.getToUser())
-                    .toUser(wxMessage.getFromUser()).build();
-            }
-        } catch (WxErrorException e) {
-            e.printStackTrace();
+        //文本内容回复
+        String respContent = "";
+        respContent = ReplyEnum.ContentFilter(wxMessage.getContent());
+
+        if (StringUtils.isNotEmpty(respContent)){}
+        else if (wxMessage.getMsgType().equals("text")){
+            respContent = TulingRobot.instance().chat(wxMessage.getFromUser(), wxMessage.getContent());
         }
-
-        //TODO 组装回复消息
-        String content = "收到信息内容：" + JsonUtils.toJson(wxMessage);
-
-        return new TextBuilder().build(content, wxMessage, weixinService);
+        //其余内容回复
+        else{
+            respContent = "图片已接收,正在识别中";
+        }
+        return new TextBuilder().build(respContent, wxMessage, weixinService);
 
     }
 
